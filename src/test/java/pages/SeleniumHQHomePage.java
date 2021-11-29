@@ -1,9 +1,7 @@
 package pages;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
@@ -11,17 +9,44 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
-import java.util.List;
 
 public class SeleniumHQHomePage {
 
-    private WebDriver driver;
+    private final WebDriver driver;
     private String billOfTheMainAccountBeforeTransaction;
     private String billValueAfterTheTransaction;
     private String totalSumToWriteOff;
     private String amountToTransfer = "0.000005";
     private String billOfTheSecondAccountBeforeTransaction;
     private String billOfTheSecondAccountAfterTransaction;
+    private String accountAddress;
+    private String billBeforeGettingEthereum;
+    private String billAfterGettingEthereum;
+
+    public String getBillAfterGettingEthereum() {
+        return billAfterGettingEthereum;
+    }
+
+    public void setBillAfterGettingEthereum(String billAfterGettingEthereum) {
+        this.billAfterGettingEthereum = billAfterGettingEthereum;
+    }
+
+    public String getBillBeforeGettingEthereum() {
+        return billBeforeGettingEthereum;
+    }
+
+    public void setBillBeforeGettingEthereum(String billBeforeGettingEthereum) {
+        this.billBeforeGettingEthereum = billBeforeGettingEthereum;
+    }
+
+    public String getAccountAddress() {
+        return accountAddress;
+    }
+
+    public void setAccountAddress(String accountAddress) {
+        this.accountAddress = accountAddress;
+    }
+
     private final String accountDropDownMenuClassName = "account-menu__icon";
 
     public String getBillOfTheMainAccountBeforeTransaction() {
@@ -127,16 +152,25 @@ public class SeleniumHQHomePage {
     @FindBy(xpath = "//button[contains(string(), 'Далее')]")
     private WebElement nextButton;
 
-    @FindBy(className = "selected-account__clickable")
-    private WebElement copyToClipboardAccountAddressButton;
+    @FindBy(xpath = "//div[@class='menu-bar']/button")
+    private WebElement accountOptionsButton;
+
+    @FindBy(xpath = "//i[contains(@class, 'fa-qrcode')]/parent::button")
+    private WebElement accountDetailsItem;
+
+    @FindBy(className = "qr-code__address")
+    private WebElement accountAddressText;
+
+    @FindBy(className = "account-modal__close")
+    private WebElement closeAccountOptions;
 
     public SeleniumHQHomePage(WebDriver driver){
         this.driver = driver;
         PageFactory.initElements(new AjaxElementLocatorFactory(driver, 5), this);
     }
 
-    public SeleniumHQHomePage createNewAccountAndSwapToMainAccount() throws InterruptedException {
-        closeNewsPopupWindow.click();//account-menu__icon
+    public SeleniumHQHomePage createNewAccountAndSwapToMainAccount() {
+        closeNewsPopupWindow.click();
         new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.elementToBeClickable(accountDropDownMenu));
 
@@ -151,23 +185,22 @@ public class SeleniumHQHomePage {
         return this;
     }
 
-    public SeleniumHQHomePage changeNetworkAndGetCurrentBill() throws InterruptedException {
-        WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(180));
-
+    public SeleniumHQHomePage changeNetwork() {
+        WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(360));
+        wait.until(ExpectedConditions.elementToBeClickable(networksDropDownMenu));
         networksDropDownMenu.click();
         testNetworkRopstenItem.click();
-        accountDropDownMenu.click();
-
-        Thread.sleep(3000);
-
-        setBillOfTheMainAccountBeforeTransaction(mainAccountBillValue.getText());
-        setBillOfTheSecondAccountBeforeTransaction(secondAccountBillValue.getText());
 
         return this;
     }
 
-    public SeleniumHQHomePage transactionBetweenMyAccounts() {
+    public SeleniumHQHomePage getCurrentBillsAndTransactionBetweenMyAccounts() throws InterruptedException {
         WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(180));
+        Thread.sleep(3000);
+
+        accountDropDownMenu.click();
+        setBillOfTheMainAccountBeforeTransaction(mainAccountBillValue.getText());
+        setBillOfTheSecondAccountBeforeTransaction(secondAccountBillValue.getText());
 
         swapToTheAnotherAccount.click();
         sendButton.click();
@@ -186,7 +219,14 @@ public class SeleniumHQHomePage {
         wait.until(ExpectedConditions.elementToBeClickable(confirmTransactionButton));
 
         confirmTransactionButton.click();
-        openListOfTransactions.click();//class="transaction-status transaction-status--pending"
+
+        return this;
+    }
+
+    public SeleniumHQHomePage waitForNewBillValue(){
+        WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(180));
+
+        openListOfTransactions.click();
         wait.until(ExpectedConditions.invisibilityOfElementWithText(
                 By.className("transaction-status--pending"),
                 "В ожидании"));
@@ -198,11 +238,29 @@ public class SeleniumHQHomePage {
         return this;
     }
 
-    public SeleniumHQHomePage copyToClipBoardAccountAddress(){
-        copyToClipboardAccountAddressButton.click();
-        Actions actions = new Actions(driver);
-        actions.sendKeys(Keys.chord(Keys.LEFT_CONTROL, "v")).build().perform();
+    public SeleniumHQHomePage getAccountAddressToPasteIntoRopsten(){
+        closeNewsPopupWindow.click();
+        accountDropDownMenu.click();
+        createNewAccountItem.click();
+        createNewAccountButton.click();
+        accountOptionsButton.click();
+        accountDetailsItem.click();
+        setAccountAddress(accountAddressText.getText());
+        closeAccountOptions.click();
 
+        return this;
+    }
+
+    public SeleniumHQHomePage waitUntilTheBillChanges() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(180));
+        wait.until(ExpectedConditions.elementToBeClickable(accountDropDownMenu));
+
+        accountDropDownMenu.click();
+
+        wait.until(ExpectedConditions.invisibilityOfElementWithText(By.xpath(
+                        "//div[contains(string(), 'Счет 2')]/following-sibling::div/span[@class='currency-display-component__text']"),
+                "0"));
+        setBillAfterGettingEthereum(secondAccountBillValue.getText());
         return this;
     }
 }
