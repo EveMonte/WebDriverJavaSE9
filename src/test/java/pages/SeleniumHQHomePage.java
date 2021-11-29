@@ -166,7 +166,7 @@ public class SeleniumHQHomePage {
 
     public SeleniumHQHomePage(WebDriver driver){
         this.driver = driver;
-        PageFactory.initElements(new AjaxElementLocatorFactory(driver, 5), this);
+        PageFactory.initElements(new AjaxElementLocatorFactory(driver, 15), this);
     }
 
     public SeleniumHQHomePage createNewAccountAndSwapToMainAccount() {
@@ -243,7 +243,12 @@ public class SeleniumHQHomePage {
 
     public SeleniumHQHomePage getAccountAddressToPasteIntoRopsten(){
         closeNewsPopupWindow.click();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(180));
+        wait.until(ExpectedConditions.elementToBeClickable(accountDropDownMenu));
+
         accountDropDownMenu.click();
+        wait.until(ExpectedConditions.elementToBeClickable(createNewAccountItem));
+
         createNewAccountItem.click();
         createNewAccountButton.click();
         accountOptionsButton.click();

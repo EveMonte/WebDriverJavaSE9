@@ -22,7 +22,7 @@ public class SeleniumHQRopstenEthereum {
 
     public SeleniumHQRopstenEthereum(ChromeDriver driver) {
         this.driver = driver;
-        PageFactory.initElements(new AjaxElementLocatorFactory(driver, 10), this);
+        PageFactory.initElements(new AjaxElementLocatorFactory(driver, 15), this);
     }
 
     public SeleniumHQRopstenEthereum  pasteAccountAddressAndGetEthereum(String accountAddress){
