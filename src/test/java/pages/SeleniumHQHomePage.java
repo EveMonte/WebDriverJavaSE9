@@ -110,7 +110,7 @@ public class SeleniumHQHomePage {
     @FindBy(className = accountDropDownMenuClassName)
     private WebElement accountDropDownMenu;
 
-    @FindBy(xpath = "//div[contains(string(), 'Создать счет')]/parent::div[contains(@class, 'account-menu__item--clickable')]")
+    @FindBy(className = "account-menu__item account-menu__item--clickable")
     private WebElement createNewAccountItem;
 
     @FindBy(xpath = "//div[@class='new-account-create-form']/div//button[contains(@class, 'btn-primary')]")
@@ -122,7 +122,7 @@ public class SeleniumHQHomePage {
     @FindBy(xpath = "//a[contains(@class, 'send__select-recipient-wrapper__list__link')]")
     private WebElement transactionBetweenMyAccountsButton;
 
-    @FindBy(xpath = "//div[contains(string(), 'Счет 2')]/parent::div[@class='send__select-recipient-wrapper__group-item__content']/parent::div")
+    @FindBy(xpath = "//div[contains(string(), '2')]/parent::div[@class='send__select-recipient-wrapper__group-item__content']/parent::div")
     private WebElement secondBillAsReceiverButton;
 
     @FindBy(xpath = "//div[@class='popover-header__title']/button")
@@ -140,10 +140,10 @@ public class SeleniumHQHomePage {
     @FindBy(xpath = "//button[contains(string(), 'Подтвердить')]")
     private WebElement confirmTransactionButton;
 
-    @FindBy(xpath = "//div[contains(string(), 'Account 1')]/following-sibling::div/span[@class='currency-display-component__text']")
+    @FindBy(xpath = "//div[contains(string(), '1')]/following-sibling::div/span[@class='currency-display-component__text']")
     private WebElement mainAccountBillValue;
 
-    @FindBy(xpath = "//div[contains(string(), 'Счет 2')]/following-sibling::div/span[@class='currency-display-component__text']")
+    @FindBy(xpath = "//div[contains(string(), '2')]/following-sibling::div/span[@class='currency-display-component__text']")
     private WebElement secondAccountBillValue;
 
     @FindBy(className = "list-item--single-content-row")
