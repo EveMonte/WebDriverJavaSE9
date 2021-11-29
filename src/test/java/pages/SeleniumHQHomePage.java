@@ -175,6 +175,9 @@ public class SeleniumHQHomePage {
                 .until(ExpectedConditions.elementToBeClickable(accountDropDownMenu));
 
         accountDropDownMenu.click();
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.elementToBeClickable(createNewAccountItem));
+
         createNewAccountItem.click();
         createNewAccountButton.click();
         new WebDriverWait(driver, Duration.ofSeconds(10))

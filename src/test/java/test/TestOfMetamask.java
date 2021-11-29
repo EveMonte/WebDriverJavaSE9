@@ -68,7 +68,7 @@ public class TestOfMetamask {
     }
 
     @Test
-    public void getEthereumFromRopsten() throws InterruptedException {
+    public void getEthereumFromRopsten() {
         signInPage.openSignInWindow().signInToMetamask();
         homePage.getAccountAddressToPasteIntoRopsten().changeNetwork();
 

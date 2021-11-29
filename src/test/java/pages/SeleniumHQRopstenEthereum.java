@@ -1,20 +1,14 @@
 package pages;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.awt.*;
-import java.awt.datatransfer.DataFlavor;
-import java.sql.Driver;
 import java.time.Duration;
 
 public class SeleniumHQRopstenEthereum {
@@ -28,13 +22,12 @@ public class SeleniumHQRopstenEthereum {
 
     public SeleniumHQRopstenEthereum(ChromeDriver driver) {
         this.driver = driver;
-        PageFactory.initElements(new AjaxElementLocatorFactory(driver, 5), this);
+        PageFactory.initElements(new AjaxElementLocatorFactory(driver, 10), this);
     }
 
     public SeleniumHQRopstenEthereum  pasteAccountAddressAndGetEthereum(String accountAddress){
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(180));
         wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[contains(@class, 'is-primary')]")));
-        //addressTextBox.click();
         addressTextBox.sendKeys(accountAddress);
         sendMeEthereum.click();
 
