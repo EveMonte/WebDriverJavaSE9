@@ -104,7 +104,6 @@ public class SeleniumHQHomePage {
     private WebElement networksDropDownMenu;
 
     @FindBy(xpath = "//span[contains(string(), 'Ropsten')]/parent::li")
-    //@FindBy(xpath = "//*[@id='app-content']/div/div[2]/div/li[2]")
     private WebElement testNetworkRopstenItem;
 
     @FindBy(className = accountDropDownMenuClassName)
@@ -173,10 +172,6 @@ public class SeleniumHQHomePage {
         closeNewsPopupWindow.click();
         new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.elementToBeClickable(accountDropDownMenu));
-
-        accountDropDownMenu.click();
-        new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.elementToBeClickable(createNewAccountItem));
 
         createNewAccountItem.click();
         createNewAccountButton.click();
@@ -247,8 +242,6 @@ public class SeleniumHQHomePage {
         wait.until(ExpectedConditions.elementToBeClickable(accountDropDownMenu));
 
         accountDropDownMenu.click();
-        wait.until(ExpectedConditions.elementToBeClickable(createNewAccountItem));
-
         createNewAccountItem.click();
         createNewAccountButton.click();
         accountOptionsButton.click();
