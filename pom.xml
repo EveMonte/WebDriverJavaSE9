@@ -9,8 +9,9 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <maven.compiler.source>9</maven.compiler.source>
+        <maven.compiler.source>9</maven.compiler.source>/
         <maven.compiler.target>9</maven.compiler.target>
+        <project.build.sourceEncoding>CP1252</project.build.sourceEncoding>
     </properties>
     <dependencies>
         <dependency>
@@ -57,7 +58,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M1</version>
                 <configuration>
-                    <argLine>-Dfile.encoding=UTF-8</argLine>
+                    <argLine>-Dfile.encoding=CP1252</argLine>
                     <skipTests>false</skipTests>
                     <testFailureIgnore>false</testFailureIgnore>
                 </configuration>
