@@ -1,101 +1,24 @@
 package pages;
+import model.BillInfo;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import transaction.TransactionSingleton;
 
 import java.time.Duration;
 
-public class SeleniumHQHomePage {
+public class SeleniumHQHomePage extends AbstractPage {
 
-    private final WebDriver driver;
-    private String billOfTheMainAccountBeforeTransaction;
-    private String billValueAfterTheTransaction;
-    private String totalSumToWriteOff;
-    private String amountToTransfer = "0.000005";
-    private String billOfTheSecondAccountBeforeTransaction;
-    private String billOfTheSecondAccountAfterTransaction;
-    private String accountAddress;
-    private String billBeforeGettingEthereum;
-    private String billAfterGettingEthereum;
-
-    public String getBillAfterGettingEthereum() {
-        return billAfterGettingEthereum;
-    }
-
-    public void setBillAfterGettingEthereum(String billAfterGettingEthereum) {
-        this.billAfterGettingEthereum = billAfterGettingEthereum;
-    }
-
-    public String getBillBeforeGettingEthereum() {
-        return billBeforeGettingEthereum;
-    }
-
-    public void setBillBeforeGettingEthereum(String billBeforeGettingEthereum) {
-        this.billBeforeGettingEthereum = billBeforeGettingEthereum;
-    }
-
-    public String getAccountAddress() {
-        return accountAddress;
-    }
-
-    public void setAccountAddress(String accountAddress) {
-        this.accountAddress = accountAddress;
-    }
-
+    private final Logger logger = LogManager.getRootLogger();
     private final String accountDropDownMenuClassName = "account-menu__icon";
 
-    public String getBillOfTheMainAccountBeforeTransaction() {
-        return billOfTheMainAccountBeforeTransaction;
-    }
-
-    private void setBillOfTheMainAccountBeforeTransaction(String billOfTheMainAccountBeforeTransaction) {
-        this.billOfTheMainAccountBeforeTransaction = billOfTheMainAccountBeforeTransaction;
-    }
-
-    public String getBillValueAfterTheTransaction() {
-        return billValueAfterTheTransaction;
-    }
-
-    private void setBillValueAfterTheTransaction(String billValueAfterTheTransaction) {
-        this.billValueAfterTheTransaction = billValueAfterTheTransaction;
-    }
-
-    public String getTotalSumToWriteOff() {
-        return totalSumToWriteOff;
-    }
-
-    private void setTotalSumToWriteOff(String totalSumToWriteOff) {
-        this.totalSumToWriteOff = totalSumToWriteOff;
-    }
-
-    public String getAmountToTransfer() {
-        return amountToTransfer;
-    }
-
-    private void setAmountToTransfer(String amountToTransfer) {
-        this.amountToTransfer = amountToTransfer;
-    }
-
-    public String getBillOfTheSecondAccountBeforeTransaction() {
-        return billOfTheSecondAccountBeforeTransaction;
-    }
-
-    private void setBillOfTheSecondAccountBeforeTransaction(String billOfTheSecondAccountBeforeTransaction) {
-        this.billOfTheSecondAccountBeforeTransaction = billOfTheSecondAccountBeforeTransaction;
-    }
-
-    public String getBillOfTheSecondAccountAfterTransaction() {
-        return billOfTheSecondAccountAfterTransaction;
-    }
-
-    private void setBillOfTheSecondAccountAfterTransaction(String billOfTheSecondAccountAfterTransaction) {
-        this.billOfTheSecondAccountAfterTransaction = billOfTheSecondAccountAfterTransaction;
-    }
+    private String amountToTransfer = "0.000005";
+    private String accountAddress;
 
     @FindBy(className = "currency-display-component__text")
     private WebElement billBeforeTransaction;
@@ -164,10 +87,31 @@ public class SeleniumHQHomePage {
     @FindBy(className = "account-modal__close")
     private WebElement closeAccountOptions;
 
-    public SeleniumHQHomePage(WebDriver driver){
-        this.driver = driver;
-        PageFactory.initElements(new AjaxElementLocatorFactory(driver, 15), this);
+    public SeleniumHQHomePage(WebDriver driver) {
+        super(driver);
     }
+
+    public String getAmountToTransfer() {
+        return amountToTransfer;
+    }
+
+    private void setAmountToTransfer(String amountToTransfer) {
+        this.amountToTransfer = amountToTransfer;
+    }
+
+    public String getAccountAddress() {
+        return accountAddress;
+    }
+
+    public void setAccountAddress(String accountAddress) {
+        this.accountAddress = accountAddress;
+    }
+
+    @Override
+    protected AbstractPage openPage() {
+        return null;
+    }
+
 
     public SeleniumHQHomePage createNewAccountAndSwapToMainAccount() {
         closeNewsPopupWindow.click();
@@ -187,7 +131,7 @@ public class SeleniumHQHomePage {
 
     public SeleniumHQHomePage changeNetwork() {
         WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(15));
-        wait.until(ExpectedConditions.elementToBeClickable(networksDropDownMenu));
+        //wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[contains(@class, 'network-display--clickable')]")));
         networksDropDownMenu.click();
         testNetworkRopstenItem.click();
 
@@ -199,8 +143,9 @@ public class SeleniumHQHomePage {
         Thread.sleep(3000);
 
         accountDropDownMenu.click();
-        setBillOfTheMainAccountBeforeTransaction(mainAccountBillValue.getText());
-        setBillOfTheSecondAccountBeforeTransaction(secondAccountBillValue.getText());
+        Thread.sleep(3000);
+        TransactionSingleton.getTransaction().getSenderAccountBill().setBillValueBeforeTransaction(Double.parseDouble(mainAccountBillValue.getText()));
+        TransactionSingleton.getTransaction().getReceiverAccountBill().setBillValueBeforeTransaction(Double.parseDouble(secondAccountBillValue.getText()));
 
         swapToTheAnotherAccount.click();
         sendButton.click();
@@ -214,8 +159,7 @@ public class SeleniumHQHomePage {
 
         wait.until(ExpectedConditions.elementToBeClickable(
                 amountPlusGasFee));
-
-        setTotalSumToWriteOff(amountPlusGasFee.getText());
+        TransactionSingleton.getTransaction().setTotalSumToWriteOff(Double.parseDouble(amountPlusGasFee.getText()));
         wait.until(ExpectedConditions.elementToBeClickable(confirmTransactionButton));
 
         confirmTransactionButton.click();
@@ -232,8 +176,8 @@ public class SeleniumHQHomePage {
                 "В ожидании"));
 
         accountDropDownMenu.click();
-        setBillValueAfterTheTransaction(mainAccountBillValue.getText());
-        setBillOfTheSecondAccountAfterTransaction(secondAccountBillValue.getText());
+        TransactionSingleton.getTransaction().getSenderAccountBill().setBillValueAfterTransaction(Double.parseDouble(mainAccountBillValue.getText()));
+        TransactionSingleton.getTransaction().getReceiverAccountBill().setBillValueAfterTransaction(Double.parseDouble(secondAccountBillValue.getText()));
 
         return this;
     }
@@ -250,13 +194,14 @@ public class SeleniumHQHomePage {
         createNewAccountButton.click();
         accountOptionsButton.click();
         accountDetailsItem.click();
+
         setAccountAddress(accountAddressText.getText());
         closeAccountOptions.click();
 
         return this;
     }
 
-    public SeleniumHQHomePage waitUntilTheBillChanges() {
+    public BillInfo waitUntilTheBillChanges() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(180));
         wait.until(ExpectedConditions.elementToBeClickable(accountDropDownMenu));
 
@@ -265,7 +210,8 @@ public class SeleniumHQHomePage {
         wait.until(ExpectedConditions.invisibilityOfElementWithText(By.xpath(
                         "//div[contains(string(), 'Счет 2')]/following-sibling::div/span[@class='currency-display-component__text']"),
                 "0"));
-        setBillAfterGettingEthereum(secondAccountBillValue.getText());
-        return this;
+        BillInfo billInfo = new BillInfo();
+        billInfo.setBillValueAfterTransaction(Double.parseDouble(secondAccountBillValue.getText()));
+        return billInfo;
     }
 }

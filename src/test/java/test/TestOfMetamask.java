@@ -1,91 +1,63 @@
 package test;
 
+import driver.TabManager;
+import model.BillInfo;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WindowType;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import pages.SeleniumHQHomePage;
 import pages.SeleniumHQRopstenEthereum;
 import pages.SeleniumHQSignInPage;
+import service.UserCreator;
+import transaction.TransactionSingleton;
+import util.DoubleUtils;
 
-import java.io.File;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 
-public class TestOfMetamask {
-    private ChromeDriver driver;
-    private ChromeOptions options;
-    private DesiredCapabilities capabilities;
-    private SeleniumHQHomePage homePage;
-    private SeleniumHQSignInPage signInPage;
-
-    @BeforeMethod(alwaysRun = true)
-    public void browserSetup() {
-        options = new ChromeOptions();
-        options.addExtensions(new File("D:\\extensions\\MetaMask.crx"));
-        options.addArguments("start-maximized");
-        capabilities = new DesiredCapabilities();
-        capabilities.setCapability(ChromeOptions.CAPABILITY, options);
-        driver = new ChromeDriver(capabilities);
-        System.setProperty("webdriver.chrome.driver", "D:\\webdrivers\\chromedriver.exe");
-        driver.get("chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/home.html");
-        homePage = new SeleniumHQHomePage(driver);
-        signInPage = new SeleniumHQSignInPage(driver);
-    }
+public class TestOfMetamask extends CommonConditions {
 
     @Test(description = "Transfer of Ethereum to another user's account")
     public void transferOfEthereum() throws InterruptedException {
+        SeleniumHQSignInPage signInPage = new SeleniumHQSignInPage(driver);
 
-        DecimalFormatSymbols symbol = DecimalFormatSymbols.getInstance();
-        symbol.setDecimalSeparator('.');
-        signInPage.openSignInWindow().signInToMetamask();
-        homePage.createNewAccountAndSwapToMainAccount().changeNetwork().getCurrentBillsAndTransactionBetweenMyAccounts()
+        signInPage.openSignInWindow()
+                .signInToMetamask(UserCreator.withCredentialsFromProperty())
+                .createNewAccountAndSwapToMainAccount()
+                .changeNetwork()
+                .getCurrentBillsAndTransactionBetweenMyAccounts()
                 .waitForNewBillValue();
 
-        double expectedValueOfMainAccountBill = Double.parseDouble(homePage.getBillOfTheMainAccountBeforeTransaction()) -
-                Double.parseDouble(homePage.getTotalSumToWriteOff());
-        double expectedValueOfSecondAccountBill = Double.parseDouble(homePage.getBillOfTheSecondAccountBeforeTransaction()) +
-                Double.parseDouble(homePage.getAmountToTransfer());
-        double actualValueOfMainAccountBill = Double.parseDouble(homePage.getBillValueAfterTheTransaction());
-        double actualValueOfSecondAccountBill = Double.parseDouble(homePage.getBillOfTheSecondAccountAfterTransaction());
+        double expectedValueOfMainAccountBill = TransactionSingleton.getTransaction()
+                .getSenderAccountBill().getBillValueBeforeTransaction() -
+                TransactionSingleton.getTransaction().getTotalSumToWriteOff();
+        double expectedValueOfSecondAccountBill = TransactionSingleton.getTransaction().getReceiverAccountBill().getBillValueBeforeTransaction() +
+                0.000005;
 
-        actualValueOfSecondAccountBill = Double.parseDouble(new DecimalFormat("#0.00000", symbol)
-                .format(actualValueOfSecondAccountBill));
-        actualValueOfMainAccountBill = Double.parseDouble(new DecimalFormat("#0.00000", symbol)
-                .format(actualValueOfMainAccountBill));
-        expectedValueOfMainAccountBill = Double.parseDouble(new DecimalFormat("#0.00000", symbol)
-                .format(expectedValueOfMainAccountBill));
-        expectedValueOfSecondAccountBill = Double.parseDouble(new DecimalFormat("#0.00000", symbol)
-                .format(expectedValueOfSecondAccountBill));
-        Assert.assertTrue(expectedValueOfMainAccountBill == actualValueOfMainAccountBill
-                && expectedValueOfSecondAccountBill == actualValueOfSecondAccountBill);
+        Assert.assertEquals(DoubleUtils.roundDouble(TransactionSingleton.getTransaction()
+                .getSenderAccountBill().getBillValueAfterTransaction()), DoubleUtils.roundDouble(expectedValueOfMainAccountBill));
+
+        Assert.assertEquals(DoubleUtils.roundDouble(TransactionSingleton.getTransaction()
+                .getReceiverAccountBill().getBillValueAfterTransaction()), DoubleUtils.roundDouble(expectedValueOfSecondAccountBill));
     }
 
     @Test
     public void getEthereumFromRopsten() {
-        signInPage.openSignInWindow().signInToMetamask();
-        homePage.getAccountAddressToPasteIntoRopsten().changeNetwork();
+        SeleniumHQHomePage homePage = new SeleniumHQHomePage(driver);
+        SeleniumHQSignInPage signInPage = new SeleniumHQSignInPage(driver);
 
-        WebDriver newTab = driver.switchTo().newWindow(WindowType.TAB);
-        newTab.get("https://faucet.ropsten.be/");
-        ArrayList<String> allTabs = new ArrayList<String> (driver.getWindowHandles());
+        String accountAddress = signInPage
+                .openSignInWindow()
+                .signInToMetamask(UserCreator.withCredentialsFromProperty())
+                .getAccountAddressToPasteIntoRopsten()
+                .changeNetwork()
+                .getAccountAddress();
 
-        (new SeleniumHQRopstenEthereum(driver)).pasteAccountAddressAndGetEthereum(homePage.getAccountAddress());
+        TabManager.createNewTabAndSwitchToIt("https://faucet.ropsten.be/");
+        (new SeleniumHQRopstenEthereum(driver)).pasteAccountAddressAndGetEthereum(accountAddress);
+        TabManager.switchToTabDefinedByIndex(1);
+        BillInfo bill = homePage.waitUntilTheBillChanges();
 
-        driver.switchTo().window(allTabs.get(1));
-        homePage.waitUntilTheBillChanges();
-
-        Assert.assertTrue(Double.parseDouble(homePage.getBillAfterGettingEthereum()) > 0.3);
-    }
-
-    @AfterMethod(alwaysRun = true)
-    public void closeBrowser() {
-        driver.quit();
+        Assert.assertTrue(bill.getBillValueAfterTransaction() > 0.3);
     }
 }

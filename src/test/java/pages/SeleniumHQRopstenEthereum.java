@@ -1,18 +1,18 @@
 package pages;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 
-public class SeleniumHQRopstenEthereum {
-    private ChromeDriver driver;
+public class SeleniumHQRopstenEthereum extends AbstractPage {
+    private final Logger logger = LogManager.getRootLogger();
 
     @FindBy(xpath = "//input[contains(@class, 'is-primary')]")
     private WebElement addressTextBox;
@@ -20,9 +20,8 @@ public class SeleniumHQRopstenEthereum {
     @FindBy(xpath = "//button[contains(@class, 'is-link')]")
     private WebElement sendMeEthereum;
 
-    public SeleniumHQRopstenEthereum(ChromeDriver driver) {
-        this.driver = driver;
-        PageFactory.initElements(new AjaxElementLocatorFactory(driver, 15), this);
+    public SeleniumHQRopstenEthereum(WebDriver driver) {
+        super(driver);
     }
 
     public SeleniumHQRopstenEthereum  pasteAccountAddressAndGetEthereum(String accountAddress){
@@ -32,5 +31,10 @@ public class SeleniumHQRopstenEthereum {
         sendMeEthereum.click();
 
         return this;
+    }
+
+    @Override
+    protected AbstractPage openPage() {
+        return null;
     }
 }

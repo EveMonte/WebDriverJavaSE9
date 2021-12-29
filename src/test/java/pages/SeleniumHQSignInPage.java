@@ -1,22 +1,16 @@
 package pages;
 
+import model.User;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.FindBys;
-import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 
-public class SeleniumHQSignInPage {
-    private ChromeDriver driver;
-    private String keyPhrase = "question until unfold mystery predict surge whale crumble dress arrange hello wife";
-    private String randomPassword = "rm.dthnb";
+public class SeleniumHQSignInPage extends AbstractPage {
     private final String keyPhraseInputLocator = "//div[contains(@class, 'first-time-flow__seedphrase')]/div/input";
     private final String openWalletButtonLocator = "//div[@class='end-of-flow']/button";
     private final String startButtonLocator = "//div[@class='welcome-page']/button";
@@ -50,9 +44,8 @@ public class SeleniumHQSignInPage {
     @FindBy(xpath = openWalletButtonLocator)
     private WebElement openWalletButton;
 
-    public SeleniumHQSignInPage(ChromeDriver driver){
-        this.driver = driver;
-        PageFactory.initElements(new AjaxElementLocatorFactory(driver, 5), this);
+    public SeleniumHQSignInPage(WebDriver driver){
+        super(driver);
     }
 
     public SeleniumHQSignInPage openSignInWindow(){
@@ -77,14 +70,14 @@ public class SeleniumHQSignInPage {
         return this;
     }
 
-    public SeleniumHQSignInPage signInToMetamask() {
+    public SeleniumHQHomePage signInToMetamask(User user) {
         new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.presenceOfElementLocated(
                         By.xpath(keyPhraseInputLocator)));
 
-        keyPhraseInput.sendKeys(keyPhrase);
-        firstPasswordInput.sendKeys(randomPassword);
-        secondPasswordInput.sendKeys(randomPassword);
+        keyPhraseInput.sendKeys(user.getKeyPhrase());
+        firstPasswordInput.sendKeys(user.getPassword());
+        secondPasswordInput.sendKeys(user.getPassword());
         termsOfUseCheckBox.click();
         importWalletButton.click();
 
@@ -92,6 +85,11 @@ public class SeleniumHQSignInPage {
                 .until(ExpectedConditions.presenceOfElementLocated(By.xpath(openWalletButtonLocator)));
 
         openWalletButton.click();
-        return this;
+        return new SeleniumHQHomePage(driver);
+    }
+
+    @Override
+    protected AbstractPage openPage() {
+        return null;
     }
 }
