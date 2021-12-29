@@ -1,5 +1,7 @@
 package pages;
 import model.BillInfo;
+import model.Network;
+import network.NetworkSingleton;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
@@ -23,12 +25,41 @@ public class SeleniumHQHomePage extends AbstractPage {
     @FindBy(className = "currency-display-component__text")
     private WebElement billBeforeTransaction;
 
+    @FindBy(id = "network-name")
+    private WebElement networkName;
+
+    @FindBy(xpath = "//div[text()='Localhost 8545']/parent::div")
+    private WebElement localhost;
+
+    @FindBy(xpath = "//div[text()='Импортировать счет']/parent::div")
+    private WebElement importBill;
+
+    @FindBy(xpath = "//button[text()='Удалить']")
+    private WebElement removeNetwork;
+
+    @FindBy(xpath = "//button[text()='Удалить']")
+    private WebElement confirmRemoving;
+
+    @FindBy(id = "rpc-url")
+    private WebElement newURLRPC;
+
+    @FindBy(id = "private-key-box")
+    private WebElement privateKeyBox;
+
+    @FindBy(id = "chainId")
+    private WebElement chainIdentifier;
+
     @FindBy(xpath = "//div[contains(@class, 'network-display--clickable')]")
     private WebElement networksDropDownMenu;
 
     @FindBy(xpath = "//span[contains(string(), 'Ropsten')]/parent::li")
-    //@FindBy(xpath = "//*[@id='app-content']/div/div[2]/div/li[2]")
     private WebElement testNetworkRopstenItem;
+
+    @FindBy(xpath = "//span[contains(string(), 'RPC')]/parent::li")
+    private WebElement createNewNetwork;
+
+    @FindBy(xpath = "//button[contains(string(), 'Добавить сеть')]")
+    private WebElement addNetwork;
 
     @FindBy(className = accountDropDownMenuClassName)
     private WebElement accountDropDownMenu;
@@ -57,11 +88,17 @@ public class SeleniumHQHomePage extends AbstractPage {
     @FindBy(className = "unit-input__input")
     private WebElement transactionValueInput;
 
+    @FindBy(className = "currency-display-component__text")
+    private WebElement currentBillValueShort;
+
     @FindBy(xpath = "//h6[contains(string(), 'Итого')]/following::span")
     private WebElement amountPlusGasFee;
 
     @FindBy(xpath = "//button[contains(string(), 'Подтвердить')]")
     private WebElement confirmTransactionButton;
+
+    @FindBy(xpath = "//button[contains(string(), 'Сохранить')]")
+    private WebElement saveNetworkButton;
 
     @FindBy(xpath = "//div[contains(string(), 'Account 1')]/following-sibling::div/span[@class='currency-display-component__text']")
     private WebElement mainAccountBillValue;
@@ -74,6 +111,9 @@ public class SeleniumHQHomePage extends AbstractPage {
 
     @FindBy(xpath = "//button[contains(string(), 'Далее')]")
     private WebElement nextButton;
+
+    @FindBy(xpath = "//button[contains(string(), 'Импорт')]")
+    private WebElement saveImportBill;
 
     @FindBy(xpath = "//div[@class='menu-bar']/button")
     private WebElement accountOptionsButton;
@@ -143,7 +183,6 @@ public class SeleniumHQHomePage extends AbstractPage {
         Thread.sleep(3000);
 
         accountDropDownMenu.click();
-        Thread.sleep(3000);
         TransactionSingleton.getTransaction().getSenderAccountBill().setBillValueBeforeTransaction(Double.parseDouble(mainAccountBillValue.getText()));
         TransactionSingleton.getTransaction().getReceiverAccountBill().setBillValueBeforeTransaction(Double.parseDouble(secondAccountBillValue.getText()));
 
@@ -213,5 +252,39 @@ public class SeleniumHQHomePage extends AbstractPage {
         BillInfo billInfo = new BillInfo();
         billInfo.setBillValueAfterTransaction(Double.parseDouble(secondAccountBillValue.getText()));
         return billInfo;
+    }
+
+    public SeleniumHQHomePage createNewNetwork() throws InterruptedException {
+        closeNewsPopupWindow.click();
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.elementToBeClickable(networksDropDownMenu));
+        networksDropDownMenu.click();
+        createNewNetwork.click();
+        //Thread.sleep(18000);
+        localhost.click();
+        removeNetwork.click();
+        confirmRemoving.click();
+        addNetwork.click();
+        networkName.sendKeys(NetworkSingleton.getNetwork().getNetworkName());
+        chainIdentifier.sendKeys(NetworkSingleton.getNetwork().getChainIdentifier());
+        newURLRPC.sendKeys(NetworkSingleton.getNetwork().getNewURLRPC());
+        saveNetworkButton.click();
+        //TransactionSingleton.clearTransaction();
+
+        return this;
+    }
+
+    public SeleniumHQHomePage importAccount(){
+        accountDropDownMenu.click();
+        importBill.click();
+        privateKeyBox.sendKeys("73f4a43a07881ed7684557dea7818976702126eac7dff14b8618a7082a9b8f8f");
+saveImportBill.click();
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.textToBePresentInElement(currentBillValueShort, "100"));
+
+        TransactionSingleton.getTransaction().getReceiverAccountBill()
+                .setBillValueAfterTransaction(Double.parseDouble(currentBillValueShort.getText()));
+
+        return this;
     }
 }

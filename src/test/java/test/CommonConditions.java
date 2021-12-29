@@ -2,6 +2,7 @@ package test;
 
 import driver.DriverSingleton;
 import model.BillInfo;
+import model.Network;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -30,6 +31,7 @@ import java.io.File;
             capabilities.setCapability(ChromeOptions.CAPABILITY, options);
             driver = DriverSingleton.getDriver(capabilities);
             driver.get("chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/home.html");
+
         }
 
         @AfterMethod(alwaysRun = true)

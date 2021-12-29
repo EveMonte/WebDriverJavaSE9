@@ -20,4 +20,5 @@ public class StringUtils
     public static String generateRandomNetworkNameWithPostfixLength(int postfixLength){
         return "testNetwork_".concat(getRandomString(postfixLength));
     }
+
 }

@@ -5,26 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8d894bd7-bc57-4b00-937a-ba48be53de61" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/test/java/driver/DriverSingleton.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/driver/TabManager.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/model/BillInfo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/model/Transaction.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/model/User.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/pages/AbstractPage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/service/TestDataReader.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/service/UserCreator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/test/CommonConditions.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/transaction/TransactionSingleton.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/util/DoubleUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/util/StringUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/util/TestListener.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/resources/log4j2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/model/Network.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/network/NetworkSingleton.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/service/NetworkCreator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/pages/SeleniumHQHomePage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/pages/SeleniumHQHomePage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/pages/SeleniumHQRopstenEthereum.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/pages/SeleniumHQRopstenEthereum.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/pages/SeleniumHQSignInPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/pages/SeleniumHQSignInPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/test/CommonConditions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/test/CommonConditions.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/test/TestOfMetamask.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/test/TestOfMetamask.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/util/StringUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/util/StringUtils.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
