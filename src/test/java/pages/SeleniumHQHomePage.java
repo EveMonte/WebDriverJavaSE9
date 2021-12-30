@@ -171,7 +171,7 @@ public class SeleniumHQHomePage extends AbstractPage {
 
     public SeleniumHQHomePage changeNetwork() {
         WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(15));
-        //wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[contains(@class, 'network-display--clickable')]")));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[contains(@class, 'network-display--clickable')]")));
         networksDropDownMenu.click();
         testNetworkRopstenItem.click();
 

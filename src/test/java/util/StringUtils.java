@@ -21,4 +21,8 @@ public class StringUtils
         return "testNetwork_".concat(getRandomString(postfixLength));
     }
 
+    public static String generateRandomContactNameWithPostfixLength(int postfixLength){
+        return "testContact_".concat(getRandomString(postfixLength));
+    }
+
 }
