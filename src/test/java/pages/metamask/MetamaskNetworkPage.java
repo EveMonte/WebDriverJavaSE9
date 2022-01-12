@@ -1,16 +1,14 @@
-package pages;
+package pages.metamask;
 
 import network.NetworkSingleton;
 import org.openqa.selenium.By;
-import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.FluentWait;
+import pages.AbstractPage;
+import pages.remix.RemixEthereum;
 import transaction.TransactionSingleton;
-
-import java.time.Duration;
 
 public class MetamaskNetworkPage extends AbstractPage {
 
@@ -93,7 +91,7 @@ public class MetamaskNetworkPage extends AbstractPage {
         logger.info("Import Account");
         accountDropDownMenu.click();
         importBill.click();
-        privateKeyBox.sendKeys("73f4a43a07881ed7684557dea7818976702126eac7dff14b8618a7082a9b8f8f");
+        privateKeyBox.sendKeys(PRIVATE_KEY);
         saveImportBill.click();
         driver.navigate().refresh();
         logo.click();

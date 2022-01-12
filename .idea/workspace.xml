@@ -5,11 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8d894bd7-bc57-4b00-937a-ba48be53de61" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/pages/MetamaskImportPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/pages/MetamaskImportPage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/pages/MetamaskTransactionPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/pages/MetamaskTransactionPage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/pages/RemixEthereum.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/pages/RemixEthereum.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/pages/AbstractPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/pages/AbstractPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/pages/MetamaskAccountsPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/pages/metamask/MetamaskAccountsPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/pages/MetamaskHomePage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/pages/metamask/MetamaskHomePage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/pages/MetamaskImportPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/pages/metamask/MetamaskImportPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/pages/MetamaskNetworkPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/pages/metamask/MetamaskNetworkPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/pages/MetamaskSettingsPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/pages/metamask/MetamaskSettingsPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/pages/MetamaskSignInPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/pages/metamask/MetamaskSignInPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/pages/MetamaskTransactionPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/pages/metamask/MetamaskTransactionPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/pages/RemixEthereum.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/pages/remix/RemixEthereum.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/pages/RopstenEthereum.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/pages/ropsten/RopstenEthereum.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/test/TestOfMetamask.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/test/TestOfMetamask.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

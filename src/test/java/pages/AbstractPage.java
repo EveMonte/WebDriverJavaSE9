@@ -17,6 +17,7 @@ public abstract class AbstractPage
 
     protected final int WAIT_TIMEOUT_SECONDS = 10;
     protected final int WAIT_FOR_TRANSACTION_TIMEOUT_SECONDS = 300;
+    protected final String PRIVATE_KEY = "73f4a43a07881ed7684557dea7818976702126eac7dff14b8618a7082a9b8f8f";
     protected WebDriverWait wait;
     protected WebDriverWait billWaiter;
     protected FluentWait<WebDriver> fluentWait;

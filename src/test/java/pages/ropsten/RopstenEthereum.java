@@ -1,4 +1,4 @@
-package pages;
+package pages.ropsten;
 
 import driver.TabManager;
 import org.apache.logging.log4j.LogManager;
@@ -9,6 +9,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import pages.AbstractPage;
 
 import java.time.Duration;
 

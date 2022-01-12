@@ -1,12 +1,10 @@
-package pages;
+package pages.metamask;
 import model.BillInfo;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.FluentWait;
+import pages.AbstractPage;
 import transaction.TransactionSingleton;
-
-import java.time.Duration;
 
 public class MetamaskHomePage extends AbstractPage {
 

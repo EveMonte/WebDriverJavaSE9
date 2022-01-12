@@ -1,4 +1,4 @@
-package pages;
+package pages.metamask;
 
 import model.User;
 import org.openqa.selenium.By;
@@ -6,9 +6,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
-import java.time.Duration;
+import pages.AbstractPage;
 
 public class MetamaskSignInPage extends AbstractPage {
     private final String keyPhraseInputLocator = "//div[contains(@class, 'first-time-flow__seedphrase')]/div/input";
