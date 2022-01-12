@@ -72,7 +72,8 @@ public class TestOfMetamask extends CommonConditions {
                 .signInToMetamask(UserCreator.withCredentialsFromProperty())
                 .closePopUps()
                 .getAccountAddressToPasteIntoRopsten();
-        homePage.changeNetworkToRopsten();
+        homePage.closeAccountOptions()
+                .changeNetworkToRopsten();
         (new RopstenEthereum(driver)).openPage()
                 .pasteAccountAddressAndGetEthereum(accountAddress);
         TabManager.switchToTabDefinedByIndex(0);

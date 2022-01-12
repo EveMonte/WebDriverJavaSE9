@@ -74,6 +74,12 @@ public class MetamaskHomePage extends AbstractPage {
         return this;
     }
 
+    public MetamaskHomePage closeAccountOptions(){
+        logger.info("Close Account Options");
+        closeAccountOptions.click();
+        return this;
+    }
+
     public MetamaskHomePage changeNetworkToRopsten() {
         logger.info("Change Network To Ropsten");
 
@@ -106,6 +112,7 @@ public class MetamaskHomePage extends AbstractPage {
 
     public String getAccountAddressToPasteIntoRopsten() {
         logger.info("Get Account Address To Paste Into Ropsten");
+        openAccountsPage();
         (new MetamaskAccountsPage(driver)).createNewAccount();
         accountOptionsButton.click();
         accountDetailsItem.click();
@@ -129,7 +136,6 @@ public class MetamaskHomePage extends AbstractPage {
 
     public BillInfo waitUntilTheBillChanges() {
         logger.info("Wait Until The Bill Changes");
-        closeAccountOptions.click();
         billWaiter.until(ExpectedConditions.elementToBeClickable(accountDropDownMenu));
         accountDropDownMenu.click();
 
