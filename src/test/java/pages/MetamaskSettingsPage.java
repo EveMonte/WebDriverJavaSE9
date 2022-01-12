@@ -4,6 +4,7 @@ import model.Contact;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import service.ContactCreator;
 
 public class MetamaskSettingsPage extends AbstractPage {
@@ -33,33 +34,28 @@ public class MetamaskSettingsPage extends AbstractPage {
     @FindBy(className = "send__select-recipient-wrapper__group-item__title")
     private WebElement createdContact;
 
-    @FindBy(xpath = "//div[@class='popover-header__title']/button")
-    private WebElement closeNewsPopupWindow;
-
-
     public MetamaskSettingsPage(WebDriver driver) {
         super(driver);
     }
 
-    @Override
     public MetamaskSettingsPage openPage() {
-        //closeNewsPopupWindow.click();
+        logger.info("Open Settings Page");
         accountDropDownMenu.click();
         openSettings.click();
         openContactInfo.click();
 
-
         return this;
     }
 
-    public Contact addContact() throws InterruptedException {
+    public Contact addContact() {
+        logger.info("Add Contact");
         Contact newContact = ContactCreator.createContact();
         addContact.click();
 
         nicknameInput.sendKeys(newContact.getContactName());
         addressInput.sendKeys(newContact.getContactAddress());
-        Thread.sleep(3000);
 
+        wait.until(ExpectedConditions.elementToBeClickable(saveContact));
         saveContact.click();
         newContact.setActualContactName(createdContact.getText());
          return newContact;

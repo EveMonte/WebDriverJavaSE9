@@ -1,5 +1,7 @@
 package pages;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
@@ -13,12 +15,13 @@ public abstract class AbstractPage
 {
     protected WebDriver driver;
 
-    protected abstract AbstractPage openPage();
     protected final int WAIT_TIMEOUT_SECONDS = 10;
     protected final int WAIT_FOR_TRANSACTION_TIMEOUT_SECONDS = 300;
     protected WebDriverWait wait;
     protected WebDriverWait billWaiter;
     protected FluentWait<WebDriver> fluentWait;
+    protected final Logger logger = LogManager.getRootLogger();
+
 
     protected AbstractPage(WebDriver driver)
     {
@@ -28,7 +31,5 @@ public abstract class AbstractPage
         billWaiter = new WebDriverWait(driver, Duration.ofSeconds(WAIT_FOR_TRANSACTION_TIMEOUT_SECONDS));
         fluentWait = new FluentWait<WebDriver>(driver).withTimeout(Duration.ofSeconds(WAIT_TIMEOUT_SECONDS))
                 .ignoring(ElementClickInterceptedException.class);
-
-
     }
 }

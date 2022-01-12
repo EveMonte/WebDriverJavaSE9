@@ -26,18 +26,17 @@ public class RopstenEthereum extends AbstractPage {
         super(driver);
     }
 
-    public RopstenEthereum pasteAccountAddressAndGetEthereum(String accountAddress){
+    public void pasteAccountAddressAndGetEthereum(String accountAddress){
+        logger.info("Paste Account Address And Get Ethereum");
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(180));
         wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[contains(@class, 'is-primary')]")));
         addressTextBox.sendKeys(accountAddress);
         sendMeEthereum.click();
-
-        return this;
     }
 
 
-    @Override
     public RopstenEthereum openPage() {
+        logger.info("Open Ropsten Page");
         TabManager.createNewTabAndSwitchToIt(BASE_URL);
         return this;
     }

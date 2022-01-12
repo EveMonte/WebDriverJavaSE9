@@ -39,6 +39,7 @@ import java.io.File;
             TabManager.switchToTabDefinedByIndex(0);
             NetworkCreator.withDataFromProperties();
             createdUser = UserCreator.withCredentialsFromProperty();
+            TransactionSingleton.getTransaction().setAmountToTransfer(0.000005);
         }
 
         @AfterMethod(alwaysRun = true)

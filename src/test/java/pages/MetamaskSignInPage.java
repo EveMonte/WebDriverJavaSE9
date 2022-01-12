@@ -49,6 +49,7 @@ public class MetamaskSignInPage extends AbstractPage {
     }
 
     public MetamaskSignInPage openSignInWindow(){
+        logger.info("Open Sign In Window");
         wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(startButtonLocator)));
         startButton.click();
 
@@ -62,6 +63,7 @@ public class MetamaskSignInPage extends AbstractPage {
     }
 
     public MetamaskHomePage signInToMetamask(User user) {
+        logger.info("Sign In To Metamask");
         wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(keyPhraseInputLocator)));
         keyPhraseInput.sendKeys(user.getKeyPhrase());
 
@@ -71,13 +73,9 @@ public class MetamaskSignInPage extends AbstractPage {
         importWalletButton.click();
 
         wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(openWalletButtonLocator)));
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath(openWalletButtonLocator)));
         openWalletButton.click();
 
         return new MetamaskHomePage(driver);
-    }
-
-    @Override
-    protected AbstractPage openPage() {
-        return null;
     }
 }

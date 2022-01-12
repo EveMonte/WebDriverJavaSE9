@@ -97,7 +97,6 @@ public class RemixEthereum extends AbstractPage {
     @FindBy(xpath = "//button[contains(string(), 'Sure')]")
     private WebElement sureButton;
 
-    @Override
     public RemixEthereum openPage() {
         TabManager.createNewTabAndSwitchToIt(BASE_URL);
         wait.until(
@@ -110,13 +109,15 @@ public class RemixEthereum extends AbstractPage {
     }
 
     public RemixEthereum closePopUps(){
+        logger.info("Close Pop Ups");
         wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[contains(string(), 'Sure')]")));
         sureButton.click();
         skipButton.click();
         return this;
     }
 
-    public RemixEthereum getFileFromGitHub(String repoURL) throws InterruptedException {
+    public RemixEthereum getFileFromGitHub(String repoURL) {
+        logger.info("Get File From GitHub");
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[text() = 'GitHub']")));
 
         gitHubButton.click();
@@ -136,6 +137,7 @@ public class RemixEthereum extends AbstractPage {
     }
 
     public RemixEthereum compileScript() {
+        logger.info("Compile Script");
         wait.until(ExpectedConditions.presenceOfElementLocated(By.className("mtk9")));
         openSolidityCompilerButton.click();
         versionsComboBox.click();
@@ -145,6 +147,7 @@ public class RemixEthereum extends AbstractPage {
     }
 
     public MetamaskHomePage deployContract() {
+        logger.info("Deploy Contract");
         deployAndRunButton.click();
         environmentComboBox.click();
         web3ProviderOption.click();
@@ -163,8 +166,9 @@ public class RemixEthereum extends AbstractPage {
         fluentWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//select[@value = '0x089DfDf1D316ec11B24F65BFD3B223f455c4aFCD']")));
         deployButton.click();
 
-        fluentWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//i/parent::button[@class = 'btn p-1 btn-secondary']")));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//i/parent::button[@class = 'btn p-1 btn-secondary']")));
         copyToClipBoardButton.click();
+        TabManager.switchToTabDefinedByIndex(0);
 
         return new MetamaskHomePage(driver);
     }
