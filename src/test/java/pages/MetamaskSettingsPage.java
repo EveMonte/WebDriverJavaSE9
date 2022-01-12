@@ -40,6 +40,7 @@ public class MetamaskSettingsPage extends AbstractPage {
 
     public MetamaskSettingsPage openPage() {
         logger.info("Open Settings Page");
+        fluentWait.until(ExpectedConditions.elementToBeClickable(accountDropDownMenu));
         accountDropDownMenu.click();
         openSettings.click();
         openContactInfo.click();
@@ -47,7 +48,7 @@ public class MetamaskSettingsPage extends AbstractPage {
         return this;
     }
 
-    public Contact addContact() {
+    public Contact addContact() throws InterruptedException {
         logger.info("Add Contact");
         Contact newContact = ContactCreator.createContact();
         addContact.click();
@@ -56,6 +57,7 @@ public class MetamaskSettingsPage extends AbstractPage {
         addressInput.sendKeys(newContact.getContactAddress());
 
         wait.until(ExpectedConditions.elementToBeClickable(saveContact));
+        Thread.sleep(2000);
         saveContact.click();
         newContact.setActualContactName(createdContact.getText());
          return newContact;

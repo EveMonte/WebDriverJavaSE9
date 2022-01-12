@@ -76,7 +76,7 @@ public class MetamaskHomePage extends AbstractPage {
 
     public MetamaskHomePage changeNetworkToRopsten() {
         logger.info("Change Network To Ropsten");
-        new FluentWait<WebDriver>(driver).withTimeout(Duration.ofSeconds(3)).ignoring(ElementClickInterceptedException.class);
+
         networksDropDownMenu.click();
         testNetworkRopstenItem.click();
         return this;
@@ -89,11 +89,11 @@ public class MetamaskHomePage extends AbstractPage {
         return new MetamaskAccountsPage(driver);
     }
 
-    public MetamaskTransactionPage getCurrentBills() {
+    public MetamaskTransactionPage getCurrentBills() throws InterruptedException {
         logger.info("Get Current Bills");
         fluentWait.until(ExpectedConditions.elementToBeClickable(accountDropDownMenu));
         accountDropDownMenu.click();
-
+        Thread.sleep(3000);
         TransactionSingleton.getTransaction().getSenderAccountBill()
                 .setBillValueBeforeTransaction(Double.parseDouble(mainAccountBillValue.getText()));
         TransactionSingleton.getTransaction().getReceiverAccountBill()
