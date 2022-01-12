@@ -116,10 +116,10 @@ public class RemixEthereum extends AbstractPage {
         return this;
     }
 
-    public RemixEthereum getFileFromGitHub(String repoURL) {
+    public RemixEthereum getFileFromGitHub(String repoURL) throws InterruptedException {
         logger.info("Get File From GitHub");
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[text() = 'GitHub']")));
-
+        Thread.sleep(2000);
         gitHubButton.click();
         urlInput.sendKeys(repoURL);
         fluentWait.until(ExpectedConditions.elementToBeClickable(modalButtonOk));
