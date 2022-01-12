@@ -85,13 +85,12 @@ public class MetamaskTransactionPage extends AbstractPage {
         return this;
     }
 
-    public MetamaskTransactionPage speedUp() {
+    public MetamaskTransactionPage speedUp() throws InterruptedException {
         logger.info("Speed Up");
         wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[contains(string(), 'Ускорить')]")));
         wait.until(ExpectedConditions.elementToBeClickable(speedUpButton));
         speedUpButton.click();
         highValueRadioButton.click();
-        TransactionSingleton.getTransaction().setTotalSumToWriteOff(Double.parseDouble(newGasFee.getText().split(" ")[0]));
         saveButton.click();
         return this;
     }
@@ -132,11 +131,11 @@ public class MetamaskTransactionPage extends AbstractPage {
         transactionValueInput.sendKeys(DoubleUtils
                 .roundDouble(TransactionSingleton.getTransaction().getAmountToTransfer()));
 
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[contains(string(), 'Далее')]")));
+        fluentWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[contains(string(), 'Далее')]")));
         nextButton.click();
 
         TransactionSingleton.getTransaction().setTotalSumToWriteOff(Double.parseDouble(amountPlusGasFee.getText()));
-        wait.until(ExpectedConditions.elementToBeClickable(confirmTransactionButton));
+        fluentWait.until(ExpectedConditions.elementToBeClickable(confirmTransactionButton));
 
         confirmTransactionButton.click();
         return this;
@@ -178,7 +177,7 @@ public class MetamaskTransactionPage extends AbstractPage {
         logger.info("Set Bill Of The Main Account");
         new WebDriverWait(driver, Duration.ofSeconds(60)).until(ExpectedConditions
                 .invisibilityOfElementWithText(By.className("currency-display-component__text"),
-                        billBeforeTransaction.getText()));
+                        "0"));
         TransactionSingleton.getTransaction().getReceiverAccountBill().setBillValueAfterTransaction(Double.parseDouble(billBeforeTransaction.getText()));
         return this;
     }

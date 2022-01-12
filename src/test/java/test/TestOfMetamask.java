@@ -3,7 +3,6 @@ package test;
 import driver.TabManager;
 import model.BillInfo;
 import model.Contact;
-import model.Transaction;
 import org.assertj.core.data.Offset;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -11,14 +10,13 @@ import pages.*;
 import service.NetworkCreator;
 import service.UserCreator;
 import transaction.TransactionSingleton;
-import util.DoubleUtils;
 import util.StringUtils;
 import static org.assertj.core.api.Assertions.assertThat;
 public class TestOfMetamask extends CommonConditions {
 
     private final String REPOSITORY_URL = "https://github.com/EveMonte/Contract/blob/main/Contract.sol";
 
-    public MetamaskHomePage preconditionForTestsWithTokenManipulation() {
+    public MetamaskHomePage preconditionForTestsWithTokenManipulation() throws InterruptedException {
         return new MetamaskSignInPage(driver).openSignInWindow()
                 .signInToMetamask(createdUser).closePopUps()
                 .openNetworksPage()
@@ -109,7 +107,7 @@ public class TestOfMetamask extends CommonConditions {
     }
 
     @Test
-    public void deployContract() {
+    public void deployContract() throws InterruptedException {
         MetamaskHomePage homePage = preconditionForTestsWithTokenManipulation();
         String expectedSymbol = StringUtils.generateRandomTokenSymbolWithPostfixLength(3);
 
@@ -173,15 +171,15 @@ public class TestOfMetamask extends CommonConditions {
 
         double expectedValueOfMainAccountBill = TransactionSingleton.getTransaction()
                 .getSenderAccountBill().getBillValueBeforeTransaction() -
-                TransactionSingleton.getTransaction().getTotalSumToWriteOff() - 0.000005;
+                TransactionSingleton.getTransaction().getTotalSumToWriteOff();
         double expectedValueOfSecondAccountBill = TransactionSingleton.getTransaction().getReceiverAccountBill().getBillValueBeforeTransaction() +
                 TransactionSingleton.getTransaction().getAmountToTransfer();
 
         assertThat(TransactionSingleton.getTransaction()
-                .getSenderAccountBill().getBillValueAfterTransaction()).isCloseTo(expectedValueOfMainAccountBill, Offset.offset(0.000002));
+                .getSenderAccountBill().getBillValueAfterTransaction()).isCloseTo(expectedValueOfMainAccountBill, Offset.offset(0.00002));
 
         assertThat(TransactionSingleton.getTransaction()
-                .getReceiverAccountBill().getBillValueAfterTransaction()).isCloseTo(expectedValueOfSecondAccountBill, Offset.offset(0.000002));
+                .getReceiverAccountBill().getBillValueAfterTransaction()).isCloseTo(expectedValueOfSecondAccountBill, Offset.offset(0.00002));
     }
 
 }
