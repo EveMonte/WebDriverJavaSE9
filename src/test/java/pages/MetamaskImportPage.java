@@ -30,12 +30,13 @@ public class MetamaskImportPage extends AbstractPage {
 
     public String importToken(String symbol) {
         logger.info("Import Token");
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("custom-address")));
+        fluentWait.until(ExpectedConditions.presenceOfElementLocated(By.id("custom-address")));
         customAddress.sendKeys(Keys.CONTROL + "V");
         customSymbol.sendKeys(symbol);
+        fluentWait.until(ExpectedConditions.elementToBeClickable(addCustomTokenButton));
         addCustomTokenButton.click();
         importTokenButton.click();
-        new WebDriverWait(driver, Duration.ofSeconds(60)).until(ExpectedConditions
+        wait.until(ExpectedConditions
                 .invisibilityOfElementWithText(By.className("currency-display-component__text"), "1"));
 
         return tokenSuffix.getText();

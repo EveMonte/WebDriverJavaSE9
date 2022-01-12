@@ -146,9 +146,9 @@ public class MetamaskTransactionPage extends AbstractPage {
         tokenCell.click();
         billWaiter.until(ExpectedConditions
                 .invisibilityOfElementWithText(By.className("transaction-status--pending"), "В ожидании"));
-        new WebDriverWait(driver, Duration.ofSeconds(60)).until(ExpectedConditions
+        wait.until(ExpectedConditions
                 .invisibilityOfElementWithText(By.className("currency-display-component__text"),
-                        billBeforeTransaction.getText()));
+                        "1"));
 
         TransactionSingleton.getTransaction().getSenderAccountBill()
                 .setBillValueAfterTransaction(Double.parseDouble(billBeforeTransaction.getText()));
