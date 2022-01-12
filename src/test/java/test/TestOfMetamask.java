@@ -1,91 +1,185 @@
 package test;
 
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WindowType;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.DesiredCapabilities;
+import driver.TabManager;
+import model.BillInfo;
+import model.Contact;
+import model.Transaction;
+import org.assertj.core.data.Offset;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import pages.SeleniumHQHomePage;
-import pages.SeleniumHQRopstenEthereum;
-import pages.SeleniumHQSignInPage;
+import pages.*;
+import service.NetworkCreator;
+import service.UserCreator;
+import transaction.TransactionSingleton;
+import util.DoubleUtils;
+import util.StringUtils;
+import static org.assertj.core.api.Assertions.assertThat;
+public class TestOfMetamask extends CommonConditions {
 
-import java.io.File;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.ArrayList;
+    private final String REPOSITORY_URL = "https://github.com/EveMonte/Contract/blob/main/Contract.sol";
 
-public class TestOfMetamask {
-    private ChromeDriver driver;
-    private ChromeOptions options;
-    private DesiredCapabilities capabilities;
-    private SeleniumHQHomePage homePage;
-    private SeleniumHQSignInPage signInPage;
-
-    @BeforeMethod(alwaysRun = true)
-    public void browserSetup() {
-        options = new ChromeOptions();
-        options.addExtensions(new File("D:\\extensions\\MetaMask.crx"));
-        options.addArguments("start-maximized");
-        capabilities = new DesiredCapabilities();
-        capabilities.setCapability(ChromeOptions.CAPABILITY, options);
-        driver = new ChromeDriver(capabilities);
-        System.setProperty("webdriver.chrome.driver", "D:\\webdrivers\\chromedriver.exe");
-        driver.get("chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/home.html");
-        homePage = new SeleniumHQHomePage(driver);
-        signInPage = new SeleniumHQSignInPage(driver);
+    public MetamaskHomePage preconditionForTestsWithTokenManipulation() {
+        return new MetamaskSignInPage(driver).openSignInWindow()
+                .signInToMetamask(createdUser).closePopUps()
+                .openNetworksPage()
+                .removeUserNetwork()
+                .createNewNetwork()
+                .importAccount()
+                .openPage()
+                .closePopUps()
+                .getFileFromGitHub(REPOSITORY_URL)
+                .compileScript()
+                .deployContract().closePopUps();
     }
 
+    public MetamaskTransactionPage preconditionForTransactions() {
+        return (new MetamaskSignInPage(driver)).openSignInWindow()
+                .signInToMetamask(UserCreator.withCredentialsFromProperty())
+                .closePopUps()
+                .openAccountsPage()
+                .createNewAccount()
+                .swapToTheMainAccount()
+                .changeNetworkToRopsten()
+                .getCurrentBills()
+                .openTransactionWindow().chooseSecondAccountAsReceiver()
+                .createTransactionBetweenMyAccounts()
+                .openListOfTransactions();
+    }
     @Test(description = "Transfer of Ethereum to another user's account")
-    public void transferOfEthereum() throws InterruptedException {
+    public void transferOfEthereum() {
+        preconditionForTransactions().waitForNewBillValue();
 
-        DecimalFormatSymbols symbol = DecimalFormatSymbols.getInstance();
-        symbol.setDecimalSeparator('.');
-        signInPage.openSignInWindow().signInToMetamask();
-        homePage.createNewAccountAndSwapToMainAccount().changeNetwork().getCurrentBillsAndTransactionBetweenMyAccounts()
-                .waitForNewBillValue();
+            double expectedValueOfMainAccountBill = TransactionSingleton.getTransaction()
+                    .getSenderAccountBill().getBillValueBeforeTransaction() -
+                    TransactionSingleton.getTransaction().getTotalSumToWriteOff();
+            double expectedValueOfSecondAccountBill = TransactionSingleton.getTransaction().getReceiverAccountBill().getBillValueBeforeTransaction() +
+                    TransactionSingleton.getTransaction().getAmountToTransfer();
+            assertThat(TransactionSingleton.getTransaction()
+                    .getSenderAccountBill().getBillValueAfterTransaction()).isCloseTo(expectedValueOfMainAccountBill, Offset.offset(0.000002));
 
-        double expectedValueOfMainAccountBill = Double.parseDouble(homePage.getBillOfTheMainAccountBeforeTransaction()) -
-                Double.parseDouble(homePage.getTotalSumToWriteOff());
-        double expectedValueOfSecondAccountBill = Double.parseDouble(homePage.getBillOfTheSecondAccountBeforeTransaction()) +
-                Double.parseDouble(homePage.getAmountToTransfer());
-        double actualValueOfMainAccountBill = Double.parseDouble(homePage.getBillValueAfterTheTransaction());
-        double actualValueOfSecondAccountBill = Double.parseDouble(homePage.getBillOfTheSecondAccountAfterTransaction());
-
-        actualValueOfSecondAccountBill = Double.parseDouble(new DecimalFormat("#0.00000", symbol)
-                .format(actualValueOfSecondAccountBill));
-        actualValueOfMainAccountBill = Double.parseDouble(new DecimalFormat("#0.00000", symbol)
-                .format(actualValueOfMainAccountBill));
-        expectedValueOfMainAccountBill = Double.parseDouble(new DecimalFormat("#0.00000", symbol)
-                .format(expectedValueOfMainAccountBill));
-        expectedValueOfSecondAccountBill = Double.parseDouble(new DecimalFormat("#0.00000", symbol)
-                .format(expectedValueOfSecondAccountBill));
-        Assert.assertTrue(expectedValueOfMainAccountBill == actualValueOfMainAccountBill
-                && expectedValueOfSecondAccountBill == actualValueOfSecondAccountBill);
-    }
+            assertThat(TransactionSingleton.getTransaction()
+                    .getReceiverAccountBill().getBillValueAfterTransaction()).isCloseTo(expectedValueOfSecondAccountBill, Offset.offset(0.000002));
+        }
 
     @Test
     public void getEthereumFromRopsten() {
-        signInPage.openSignInWindow().signInToMetamask();
-        homePage.getAccountAddressToPasteIntoRopsten().changeNetwork();
+        MetamaskHomePage homePage = new MetamaskHomePage(driver);
+        MetamaskSignInPage signInPage = new MetamaskSignInPage(driver);
 
-        WebDriver newTab = driver.switchTo().newWindow(WindowType.TAB);
-        newTab.get("https://faucet.ropsten.be/");
-        ArrayList<String> allTabs = new ArrayList<String> (driver.getWindowHandles());
-
-        (new SeleniumHQRopstenEthereum(driver)).pasteAccountAddressAndGetEthereum(homePage.getAccountAddress());
-
-        driver.switchTo().window(allTabs.get(1));
-        homePage.waitUntilTheBillChanges();
-
-        Assert.assertTrue(Double.parseDouble(homePage.getBillAfterGettingEthereum()) > 0.3);
+        String accountAddress = signInPage
+                .openSignInWindow()
+                .signInToMetamask(UserCreator.withCredentialsFromProperty())
+                .closePopUps()
+                .getAccountAddressToPasteIntoRopsten();
+        homePage.changeNetworkToRopsten();
+        (new RopstenEthereum(driver)).openPage()
+                .pasteAccountAddressAndGetEthereum(accountAddress);
+        TabManager.switchToTabDefinedByIndex(0);
+        BillInfo bill = homePage.waitUntilTheBillChanges();
+        assertThat(bill.getBillValueAfterTransaction()).isGreaterThanOrEqualTo(0.3);
     }
 
-    @AfterMethod(alwaysRun = true)
-    public void closeBrowser() {
-        driver.quit();
+    @Test
+    public void createNetwork() {
+        MetamaskSignInPage signInPage = new MetamaskSignInPage(driver);
+        NetworkCreator.withDataFromProperties();
+        signInPage
+                .openSignInWindow()
+                .signInToMetamask(UserCreator.withCredentialsFromProperty())
+                .closePopUps()
+                .openNetworksPage()
+                .removeUserNetwork()
+                .createNewNetwork()
+                .importAccount();
+        Assert.assertEquals(TransactionSingleton.getTransaction().getReceiverAccountBill().getBillValueAfterTransaction(), 100.0);
     }
+
+    @Test
+    public void createContact() {
+        new MetamaskSignInPage(driver).openSignInWindow()
+                .signInToMetamask(UserCreator.withCredentialsFromProperty())
+                .closePopUps();
+        Contact newContact = new MetamaskSettingsPage(driver)
+                .openPage()
+                .addContact();
+
+        Assert.assertEquals(newContact.getActualContactName(), newContact.getContactName());
+    }
+
+    @Test
+    public void deployContract() {
+        MetamaskHomePage homePage = preconditionForTestsWithTokenManipulation();
+        String expectedSymbol = StringUtils.generateRandomTokenSymbolWithPostfixLength(3);
+
+        String suffix = homePage.openImportPage().importToken(expectedSymbol);
+        Assert.assertEquals(suffix, expectedSymbol);
+    }
+
+    @Test
+    public void sendToken() {
+        TransactionSingleton.getTransaction().setAmountToTransfer(1);
+        MetamaskHomePage homePage = preconditionForTestsWithTokenManipulation();
+        String expectedSymbol = StringUtils.generateRandomTokenSymbolWithPostfixLength(3);
+        MetamaskImportPage importPage = homePage.openImportPage();
+        importPage.importToken(expectedSymbol);
+        importPage.setAmountToTransfer()
+                .openTransactionWindow()
+                .chooseMainAccountAsReceiver()
+                .transferOfToken()
+                .setBillOfTheMainAccount()
+                .waitForTokenTransaction()
+                .swapToTheMainAccount();
+        homePage.openImportPage().importToken(expectedSymbol);
+        (new MetamaskTransactionPage(driver)).setBillOfTheMainAccount();
+
+        assertThat(TransactionSingleton.getTransaction().getReceiverAccountBill().getBillValueAfterTransaction())
+                .isEqualTo(TransactionSingleton.getTransaction().getAmountToTransfer()/100);
+
+        assertThat(TransactionSingleton.getTransaction().getSenderAccountBill().getBillValueAfterTransaction())
+                .isEqualTo(TransactionSingleton.getTransaction().getSenderAccountBill().getBillValueBeforeTransaction()
+                        - TransactionSingleton.getTransaction().getAmountToTransfer()/100);
+    }
+
+    @Test
+    public void sendTokenToContact() {
+        TransactionSingleton.getTransaction().setAmountToTransfer(1);
+        MetamaskHomePage homePage = preconditionForTestsWithTokenManipulation();
+        String expectedSymbol = StringUtils.generateRandomTokenSymbolWithPostfixLength(3);
+        new MetamaskSettingsPage(driver)
+                .openPage()
+                .addContact();
+
+        MetamaskImportPage importPage = homePage.clickOnLogo()
+                .openImportPage();
+        importPage.importToken(expectedSymbol);
+        importPage.setAmountToTransfer()
+                .openTransactionWindow()
+                .chooseContactAsReceiver()
+                .transferOfToken()
+                .setBillOfTheMainAccount()
+                .waitForTokenTransaction();
+
+        assertThat(TransactionSingleton.getTransaction().getSenderAccountBill().getBillValueAfterTransaction())
+                .isEqualTo(TransactionSingleton.getTransaction().getSenderAccountBill().getBillValueBeforeTransaction()
+                        - TransactionSingleton.getTransaction().getAmountToTransfer()/100);
+    }
+
+    @Test(description = "Transfer of Ethereum to another user's account")
+    public void speedUpTransaction() {
+        preconditionForTransactions().speedUp()
+                .waitForNewBillValue();
+
+        double expectedValueOfMainAccountBill = TransactionSingleton.getTransaction()
+                .getSenderAccountBill().getBillValueBeforeTransaction() -
+                TransactionSingleton.getTransaction().getTotalSumToWriteOff() - 0.000005;
+        double expectedValueOfSecondAccountBill = TransactionSingleton.getTransaction().getReceiverAccountBill().getBillValueBeforeTransaction() +
+                TransactionSingleton.getTransaction().getAmountToTransfer();
+
+        assertThat(TransactionSingleton.getTransaction()
+                .getSenderAccountBill().getBillValueAfterTransaction()).isCloseTo(expectedValueOfMainAccountBill, Offset.offset(0.000002));
+
+        assertThat(TransactionSingleton.getTransaction()
+                .getReceiverAccountBill().getBillValueAfterTransaction()).isCloseTo(expectedValueOfSecondAccountBill, Offset.offset(0.000002));
+    }
+
 }
