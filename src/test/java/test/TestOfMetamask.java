@@ -47,7 +47,7 @@ public class TestOfMetamask extends CommonConditions {
                 .openListOfTransactions();
     }
     @Test(description = "Transfer of Ethereum to another user's account")
-    public void transferOfEthereum() {
+    public void transferOfEthereum() throws InterruptedException {
         preconditionForTransactions().waitForNewBillValue();
 
             double expectedValueOfMainAccountBill = TransactionSingleton.getTransaction()
