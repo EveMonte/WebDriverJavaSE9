@@ -5,10 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8d894bd7-bc57-4b00-937a-ba48be53de61" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/pages/MetamaskHomePage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/pages/MetamaskHomePage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/pages/MetamaskSettingsPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/pages/MetamaskSettingsPage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/pages/MetamaskTransactionPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/pages/MetamaskTransactionPage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/test/TestOfMetamask.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/test/TestOfMetamask.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
