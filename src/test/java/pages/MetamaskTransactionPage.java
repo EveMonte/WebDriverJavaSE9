@@ -108,10 +108,11 @@ public class MetamaskTransactionPage extends AbstractPage {
         return this;
     }
 
-    public MetamaskTransactionPage transferOfToken() {
+    public MetamaskTransactionPage transferOfToken() throws InterruptedException {
         logger.info("Transfer Of Token");
         transactionValueInput.sendKeys(String.valueOf(TransactionSingleton.getTransaction().getAmountToTransfer()));
         arrowDown.click();
+        Thread.sleep(2000);
         TransactionSingleton.getTransaction().getSenderAccountBill()
                 .setBillValueBeforeTransaction(Double.parseDouble(
                         driver.findElement(By.className("currency-display-component__text")).getText()));
@@ -131,7 +132,7 @@ public class MetamaskTransactionPage extends AbstractPage {
         transactionValueInput.sendKeys(DoubleUtils
                 .roundDouble(TransactionSingleton.getTransaction().getAmountToTransfer()));
 
-        wait.until(ExpectedConditions.elementToBeClickable(nextButton));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[contains(string(), 'Далее')]")));
         nextButton.click();
 
         TransactionSingleton.getTransaction().setTotalSumToWriteOff(Double.parseDouble(amountPlusGasFee.getText()));
