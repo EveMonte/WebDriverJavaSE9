@@ -10,7 +10,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 
-public class SeleniumHQSignInPage extends AbstractPage {
+public class MetamaskSignInPage extends AbstractPage {
     private final String keyPhraseInputLocator = "//div[contains(@class, 'first-time-flow__seedphrase')]/div/input";
     private final String openWalletButtonLocator = "//div[@class='end-of-flow']/button";
     private final String startButtonLocator = "//div[@class='welcome-page']/button";
@@ -44,48 +44,36 @@ public class SeleniumHQSignInPage extends AbstractPage {
     @FindBy(xpath = openWalletButtonLocator)
     private WebElement openWalletButton;
 
-    public SeleniumHQSignInPage(WebDriver driver){
+    public MetamaskSignInPage(WebDriver driver){
         super(driver);
     }
 
-    public SeleniumHQSignInPage openSignInWindow(){
-        new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.presenceOfElementLocated(
-                        By.xpath(startButtonLocator)));
-
+    public MetamaskSignInPage openSignInWindow(){
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(startButtonLocator)));
         startButton.click();
 
-        new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.presenceOfElementLocated(
-                        By.xpath(importButtonLocator)));
-
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(importButtonLocator)));
         importButton.click();
 
-        new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.presenceOfElementLocated(
-                        By.xpath(confirmButtonLocator)));
-
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(confirmButtonLocator)));
         confirmButton.click();
 
         return this;
     }
 
-    public SeleniumHQHomePage signInToMetamask(User user) {
-        new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.presenceOfElementLocated(
-                        By.xpath(keyPhraseInputLocator)));
-
+    public MetamaskHomePage signInToMetamask(User user) {
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(keyPhraseInputLocator)));
         keyPhraseInput.sendKeys(user.getKeyPhrase());
+
         firstPasswordInput.sendKeys(user.getPassword());
         secondPasswordInput.sendKeys(user.getPassword());
         termsOfUseCheckBox.click();
         importWalletButton.click();
 
-        new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.presenceOfElementLocated(By.xpath(openWalletButtonLocator)));
-
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(openWalletButtonLocator)));
         openWalletButton.click();
-        return new SeleniumHQHomePage(driver);
+
+        return new MetamaskHomePage(driver);
     }
 
     @Override

@@ -1,38 +1,52 @@
 package pages;
 import model.BillInfo;
-import model.Network;
 import network.NetworkSingleton;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import transaction.TransactionSingleton;
+import util.StringUtils;
 
 import java.time.Duration;
 
-public class SeleniumHQHomePage extends AbstractPage {
+public class MetamaskHomePage extends AbstractPage {
 
     private final Logger logger = LogManager.getRootLogger();
     private final String accountDropDownMenuClassName = "account-menu__icon";
 
-    private String amountToTransfer = "0.000005";
     private String accountAddress;
 
     @FindBy(className = "currency-display-component__text")
     private WebElement billBeforeTransaction;
 
+    @FindBy(className = "currency-display-component__suffix")
+    private WebElement tokenSuffix;
+
     @FindBy(id = "network-name")
     private WebElement networkName;
+
+    @FindBy(id = "custom-address")
+    private WebElement customAddress;
 
     @FindBy(xpath = "//div[text()='Localhost 8545']/parent::div")
     private WebElement localhost;
 
+    @FindBy(xpath = "//button[contains(string(), 'Add')]")
+    private WebElement addCustomTokenButton;
+
+    @FindBy(xpath = "//button[contains(string(), 'Import')]")
+    private WebElement importTokenButton;
+
     @FindBy(xpath = "//div[text()='Импортировать счет']/parent::div")
     private WebElement importBill;
+
+    @FindBy(xpath = "//a[contains(string(), 'Import')]")
+    private WebElement importToken;
 
     @FindBy(xpath = "//button[text()='Удалить']")
     private WebElement removeNetwork;
@@ -48,6 +62,9 @@ public class SeleniumHQHomePage extends AbstractPage {
 
     @FindBy(id = "chainId")
     private WebElement chainIdentifier;
+
+    @FindBy(id = "custom-symbol")
+    private WebElement customSymbol;
 
     @FindBy(xpath = "//div[contains(@class, 'network-display--clickable')]")
     private WebElement networksDropDownMenu;
@@ -109,6 +126,9 @@ public class SeleniumHQHomePage extends AbstractPage {
     @FindBy(className = "list-item--single-content-row")
     private WebElement openListOfTransactions;
 
+    @FindBy(className = "app-header__logo-container--clickable")
+    private WebElement logo;
+
     @FindBy(xpath = "//button[contains(string(), 'Далее')]")
     private WebElement nextButton;
 
@@ -127,16 +147,9 @@ public class SeleniumHQHomePage extends AbstractPage {
     @FindBy(className = "account-modal__close")
     private WebElement closeAccountOptions;
 
-    public SeleniumHQHomePage(WebDriver driver) {
+    public MetamaskHomePage(WebDriver driver) {
         super(driver);
-    }
-
-    public String getAmountToTransfer() {
-        return amountToTransfer;
-    }
-
-    private void setAmountToTransfer(String amountToTransfer) {
-        this.amountToTransfer = amountToTransfer;
+        closePopUps();
     }
 
     public String getAccountAddress() {
@@ -152,67 +165,72 @@ public class SeleniumHQHomePage extends AbstractPage {
         return null;
     }
 
-
-    public SeleniumHQHomePage createNewAccountAndSwapToMainAccount() {
+    public MetamaskHomePage closePopUps(){
+        wait.until(ExpectedConditions.elementToBeClickable(closeNewsPopupWindow));
         closeNewsPopupWindow.click();
-        new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.elementToBeClickable(accountDropDownMenu));
+        return this;
+    }
 
+    public MetamaskHomePage createNewAccount() {
+        wait.until(ExpectedConditions.elementToBeClickable(accountDropDownMenu));
         accountDropDownMenu.click();
         createNewAccountItem.click();
         createNewAccountButton.click();
-        new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.presenceOfElementLocated(By.className(accountDropDownMenuClassName)));
+        return this;
+    }
+    
+    public MetamaskHomePage swapToTheMainAccount(){
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.className(accountDropDownMenuClassName)));
         accountDropDownMenu.click();
         swapToTheAnotherAccount.click();
 
         return this;
     }
 
-    public SeleniumHQHomePage changeNetwork() {
-        WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(15));
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[contains(@class, 'network-display--clickable')]")));
+    public MetamaskHomePage changeNetworkToRopsten() {
+        new FluentWait<WebDriver>(driver).withTimeout(Duration.ofSeconds(3)).ignoring(ElementClickInterceptedException.class);
         networksDropDownMenu.click();
         testNetworkRopstenItem.click();
-
         return this;
     }
 
-    public SeleniumHQHomePage getCurrentBillsAndTransactionBetweenMyAccounts() throws InterruptedException {
-        WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(180));
+    public MetamaskHomePage getCurrentBills() throws InterruptedException {
         Thread.sleep(3000);
 
         accountDropDownMenu.click();
-        TransactionSingleton.getTransaction().getSenderAccountBill().setBillValueBeforeTransaction(Double.parseDouble(mainAccountBillValue.getText()));
-        TransactionSingleton.getTransaction().getReceiverAccountBill().setBillValueBeforeTransaction(Double.parseDouble(secondAccountBillValue.getText()));
+        TransactionSingleton.getTransaction().getSenderAccountBill()
+                .setBillValueBeforeTransaction(Double.parseDouble(mainAccountBillValue.getText()));
+        TransactionSingleton.getTransaction().getReceiverAccountBill()
+                .setBillValueBeforeTransaction(Double.parseDouble(secondAccountBillValue.getText()));
 
         swapToTheAnotherAccount.click();
+
+        return this;
+    }
+    
+    public MetamaskHomePage createTransactionBetweenMyAccounts() {
         sendButton.click();
         transactionBetweenMyAccountsButton.click();
         secondBillAsReceiverButton.click();
-        transactionValueInput.sendKeys(amountToTransfer);
+        transactionValueInput.sendKeys("0.000005");
 
         wait.until(ExpectedConditions.elementToBeClickable(nextButton));
 
         nextButton.click();
 
-        wait.until(ExpectedConditions.elementToBeClickable(
-                amountPlusGasFee));
+        wait.until(ExpectedConditions.elementToBeClickable(amountPlusGasFee));
         TransactionSingleton.getTransaction().setTotalSumToWriteOff(Double.parseDouble(amountPlusGasFee.getText()));
+        System.out.println("Pupupu: " + amountPlusGasFee.getText() + " " + TransactionSingleton.getTransaction().getTotalSumToWriteOff());
         wait.until(ExpectedConditions.elementToBeClickable(confirmTransactionButton));
 
         confirmTransactionButton.click();
-
         return this;
     }
 
-    public SeleniumHQHomePage waitForNewBillValue(){
-        WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(180));
-
+    public MetamaskHomePage waitForNewBillValue(){
         openListOfTransactions.click();
-        wait.until(ExpectedConditions.invisibilityOfElementWithText(
-                By.className("transaction-status--pending"),
-                "В ожидании"));
+        billWaiter.until(ExpectedConditions
+                .invisibilityOfElementWithText(By.className("transaction-status--pending"),"В ожидании"));
 
         accountDropDownMenu.click();
         TransactionSingleton.getTransaction().getSenderAccountBill().setBillValueAfterTransaction(Double.parseDouble(mainAccountBillValue.getText()));
@@ -221,19 +239,10 @@ public class SeleniumHQHomePage extends AbstractPage {
         return this;
     }
 
-    public SeleniumHQHomePage getAccountAddressToPasteIntoRopsten(){
-        closeNewsPopupWindow.click();
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(180));
-        wait.until(ExpectedConditions.elementToBeClickable(accountDropDownMenu));
-
-        accountDropDownMenu.click();
-        wait.until(ExpectedConditions.elementToBeClickable(createNewAccountItem));
-
-        createNewAccountItem.click();
-        createNewAccountButton.click();
+    public MetamaskHomePage getAccountAddressToPasteIntoRopsten(){
+        createNewAccount();
         accountOptionsButton.click();
         accountDetailsItem.click();
-
         setAccountAddress(accountAddressText.getText());
         closeAccountOptions.click();
 
@@ -241,50 +250,65 @@ public class SeleniumHQHomePage extends AbstractPage {
     }
 
     public BillInfo waitUntilTheBillChanges() {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(180));
-        wait.until(ExpectedConditions.elementToBeClickable(accountDropDownMenu));
-
+        billWaiter.until(ExpectedConditions.elementToBeClickable(accountDropDownMenu));
         accountDropDownMenu.click();
 
         wait.until(ExpectedConditions.invisibilityOfElementWithText(By.xpath(
                         "//div[contains(string(), 'Счет 2')]/following-sibling::div/span[@class='currency-display-component__text']"),
-                "0"));
+                "0.0"));
         BillInfo billInfo = new BillInfo();
         billInfo.setBillValueAfterTransaction(Double.parseDouble(secondAccountBillValue.getText()));
         return billInfo;
     }
 
-    public SeleniumHQHomePage createNewNetwork() throws InterruptedException {
-        closeNewsPopupWindow.click();
-        new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.elementToBeClickable(networksDropDownMenu));
+    public MetamaskHomePage removeUserNetwork() {
+        wait.until(ExpectedConditions.elementToBeClickable(networksDropDownMenu));
         networksDropDownMenu.click();
         createNewNetwork.click();
-        //Thread.sleep(18000);
         localhost.click();
         removeNetwork.click();
         confirmRemoving.click();
+
+        return this;
+    }
+
+    public MetamaskHomePage createNewNetwork(){
+        new FluentWait<WebDriver>(driver).withTimeout(Duration.ofSeconds(3)).ignoring(ElementClickInterceptedException.class);
         addNetwork.click();
         networkName.sendKeys(NetworkSingleton.getNetwork().getNetworkName());
         chainIdentifier.sendKeys(NetworkSingleton.getNetwork().getChainIdentifier());
         newURLRPC.sendKeys(NetworkSingleton.getNetwork().getNewURLRPC());
         saveNetworkButton.click();
-        //TransactionSingleton.clearTransaction();
-
         return this;
     }
 
-    public SeleniumHQHomePage importAccount(){
+    public RemixEthereum importAccount(){
         accountDropDownMenu.click();
         importBill.click();
         privateKeyBox.sendKeys("73f4a43a07881ed7684557dea7818976702126eac7dff14b8618a7082a9b8f8f");
-saveImportBill.click();
-        new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.textToBePresentInElement(currentBillValueShort, "100"));
+        saveImportBill.click();
+        driver.navigate().refresh();
+        logo.click();
+        wait.until(ExpectedConditions.invisibilityOfElementWithText(By.className("currency-display-component__text"),"0"));
 
         TransactionSingleton.getTransaction().getReceiverAccountBill()
                 .setBillValueAfterTransaction(Double.parseDouble(currentBillValueShort.getText()));
 
-        return this;
+        return new RemixEthereum(driver);
     }
+
+    public String importToken(String symbol) throws InterruptedException {
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[contains(string(), 'Import')]")));
+        wait.until(ExpectedConditions.elementToBeClickable(importToken));
+        Thread.sleep(2000);
+        importToken.click();
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("custom-address")));
+        customAddress.sendKeys(Keys.CONTROL + "V");
+        customSymbol.sendKeys(symbol);
+        addCustomTokenButton.click();
+        importTokenButton.click();
+        return tokenSuffix.getText();
+    }
+
+
 }

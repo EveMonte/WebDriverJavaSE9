@@ -5,13 +5,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8d894bd7-bc57-4b00-937a-ba48be53de61" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/test/java/model/Contact.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/pages/SeleniumHQSettingsPage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/service/ContactCreator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/pages/RemixEthereum.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/util/PageUtils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/pages/SeleniumHQHomePage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/pages/SeleniumHQHomePage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/driver/TabManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/driver/TabManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/model/Transaction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/model/Transaction.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/pages/AbstractPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/pages/AbstractPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/pages/SeleniumHQHomePage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/pages/MetamaskHomePage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/pages/SeleniumHQRopstenEthereum.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/pages/RopstenEthereum.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/pages/SeleniumHQSettingsPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/pages/MetamaskSettingsPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/pages/SeleniumHQSignInPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/pages/MetamaskSignInPage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/service/UserCreator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/service/UserCreator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/test/CommonConditions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/test/CommonConditions.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/test/TestOfMetamask.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/test/TestOfMetamask.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/transaction/TransactionSingleton.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/transaction/TransactionSingleton.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/util/DoubleUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/util/DoubleUtils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/util/StringUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/util/StringUtils.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

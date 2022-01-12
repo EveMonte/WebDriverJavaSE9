@@ -1,14 +1,18 @@
 package test;
 
 import driver.DriverSingleton;
+import driver.TabManager;
 import model.BillInfo;
 import model.Network;
+import model.User;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
+import service.NetworkCreator;
+import service.UserCreator;
 import transaction.TransactionSingleton;
 import util.TestListener;
 
@@ -18,8 +22,8 @@ import java.io.File;
     public class CommonConditions {
         private ChromeOptions options;
         private DesiredCapabilities capabilities;
+        protected User createdUser;
         protected WebDriver driver;
-
 
         @BeforeMethod()
         public void setUp() {
@@ -31,7 +35,10 @@ import java.io.File;
             capabilities.setCapability(ChromeOptions.CAPABILITY, options);
             driver = DriverSingleton.getDriver(capabilities);
             driver.get("chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/home.html");
-
+            TabManager.setAllTabs();
+            TabManager.switchToTabDefinedByIndex(0);
+            NetworkCreator.withDataFromProperties();
+            createdUser = UserCreator.withCredentialsFromProperty();
         }
 
         @AfterMethod(alwaysRun = true)

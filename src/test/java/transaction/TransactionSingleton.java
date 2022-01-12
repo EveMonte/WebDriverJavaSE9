@@ -2,6 +2,7 @@ package transaction;
 
 import model.BillInfo;
 import model.Transaction;
+import util.DoubleUtils;
 
 public class TransactionSingleton {
     private static Transaction transaction;
@@ -14,6 +15,7 @@ public class TransactionSingleton {
             transaction.setSenderAccountBill(new BillInfo());
             transaction.setReceiverAccountBill(new BillInfo());
             transaction.setTotalSumToWriteOff(0);
+            transaction.setAmountToTransfer(0.000005);
         }
         return transaction;
     }
@@ -22,6 +24,7 @@ public class TransactionSingleton {
         transaction.setSenderAccountBill(null);
         transaction.setReceiverAccountBill(null);
         transaction.setTotalSumToWriteOff(0);
+        transaction.setAmountToTransfer(0);
         transaction = null;
     }
 

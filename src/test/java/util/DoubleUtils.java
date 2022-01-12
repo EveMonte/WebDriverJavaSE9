@@ -8,7 +8,11 @@ public class DoubleUtils {
     public static double roundDouble(double oldValue){
         symbol = DecimalFormatSymbols.getInstance();
         symbol.setDecimalSeparator('.');
-        return Double.parseDouble(new DecimalFormat("#0.00000", symbol)
+        return Double.parseDouble(new DecimalFormat("#0.000000", symbol)
                 .format(oldValue));
+    }
+
+    public static double generateRandomDoubleNumberLessThan(double maxValue){
+        return Math.random() * maxValue;
     }
 }

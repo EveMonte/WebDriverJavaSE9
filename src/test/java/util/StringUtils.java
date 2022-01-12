@@ -20,6 +20,9 @@ public class StringUtils
     public static String generateRandomNetworkNameWithPostfixLength(int postfixLength){
         return "testNetwork_".concat(getRandomString(postfixLength));
     }
+    public static String generateRandomTokenSymbolWithPostfixLength(int postfixLength){
+        return getRandomString(postfixLength);
+    }
 
     public static String generateRandomContactNameWithPostfixLength(int postfixLength){
         return "testContact_".concat(getRandomString(postfixLength));

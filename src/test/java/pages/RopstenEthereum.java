@@ -1,5 +1,6 @@
 package pages;
 
+import driver.TabManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
@@ -11,7 +12,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 
-public class SeleniumHQRopstenEthereum extends AbstractPage {
+public class RopstenEthereum extends AbstractPage {
+    private final String BASE_URL = "https://faucet.ropsten.be/";
     private final Logger logger = LogManager.getRootLogger();
 
     @FindBy(xpath = "//input[contains(@class, 'is-primary')]")
@@ -20,11 +22,11 @@ public class SeleniumHQRopstenEthereum extends AbstractPage {
     @FindBy(xpath = "//button[contains(@class, 'is-link')]")
     private WebElement sendMeEthereum;
 
-    public SeleniumHQRopstenEthereum(WebDriver driver) {
+    public RopstenEthereum(WebDriver driver) {
         super(driver);
     }
 
-    public SeleniumHQRopstenEthereum  pasteAccountAddressAndGetEthereum(String accountAddress){
+    public RopstenEthereum pasteAccountAddressAndGetEthereum(String accountAddress){
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(180));
         wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[contains(@class, 'is-primary')]")));
         addressTextBox.sendKeys(accountAddress);
@@ -33,8 +35,10 @@ public class SeleniumHQRopstenEthereum extends AbstractPage {
         return this;
     }
 
+
     @Override
-    protected AbstractPage openPage() {
-        return null;
+    public RopstenEthereum openPage() {
+        TabManager.createNewTabAndSwitchToIt(BASE_URL);
+        return this;
     }
 }

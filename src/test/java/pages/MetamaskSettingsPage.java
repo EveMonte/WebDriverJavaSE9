@@ -6,7 +6,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import service.ContactCreator;
 
-public class SeleniumHQSettingsPage extends AbstractPage {
+public class MetamaskSettingsPage extends AbstractPage {
     private final String accountDropDownMenuClassName = "account-menu__icon";
 
     @FindBy (xpath = "//div[text()='Настройки']/parent::div")
@@ -37,13 +37,13 @@ public class SeleniumHQSettingsPage extends AbstractPage {
     private WebElement closeNewsPopupWindow;
 
 
-    public SeleniumHQSettingsPage(WebDriver driver) {
+    public MetamaskSettingsPage(WebDriver driver) {
         super(driver);
     }
 
     @Override
-    public SeleniumHQSettingsPage openPage() {
-        closeNewsPopupWindow.click();
+    public MetamaskSettingsPage openPage() {
+        //closeNewsPopupWindow.click();
         accountDropDownMenu.click();
         openSettings.click();
         openContactInfo.click();

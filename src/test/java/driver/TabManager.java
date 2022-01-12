@@ -12,6 +12,11 @@ public class TabManager {
         WebDriver newTab = DriverSingleton.getDriver(null).switchTo().newWindow(WindowType.TAB);
         newTab.get(url);
         allTabs = new ArrayList<String> (DriverSingleton.getDriver(null).getWindowHandles());
+        System.out.println("Amount of: " + allTabs.size());
+    }
+
+    public static void setAllTabs(){
+        allTabs = new ArrayList<String> (DriverSingleton.getDriver(null).getWindowHandles());
     }
 
     public static void switchToTabDefinedByIndex(int index){
